@@ -41,7 +41,9 @@
         "src/content/messaging.js",
         "src/content/inject-network-guards.js",
         "src/content/caughtup-gate.js",
-        "src/content/page-guards.js"
+        "src/content/page-guards.js",
+        "src/content/page-feed-filter.js",
+        "src/content/follow-cache.js"
       ],
       "matches": ["*://www.instagram.com/*"]
     }

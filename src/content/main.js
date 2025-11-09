@@ -7,10 +7,13 @@ import { filterAll } from './filters.js';
 import { attachMessaging } from './messaging.js';
 import { injectNetworkGuards } from './inject-network-guards.js';
 import { installCaughtUpGate } from './caughtup-gate.js'; // <-- add this
+import { loadFollowCache, attachFollowLearner } from './follow-cache.js';
 
 (async function init() {
   try {
     await loadSettings();
+    await loadFollowCache(); // <— load cache before injecting page scripts
+    attachFollowLearner(); // <— listen for learned usernames
     injectNetworkGuards(); // page patch (off by default)
     installCaughtUpGate(); // flips block ON after "You're all caught up"
     injectCSS();
