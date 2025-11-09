@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "Instagram Sanitizer",
+  "version": "0.1.0",
+  "description": "Hide Reels, Explore, Suggested, and Sponsored posts — keep only what you follow.",
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "48": "assets/icons/icon64.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "options_page": "src/options.html",
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon64.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "permissions": ["storage", "declarativeNetRequest", "tabs"],
+  "host_permissions": ["*://www.instagram.com/*"],
+
+  "content_scripts": [
+    {
+      "matches": ["*://www.instagram.com/*"],
+      "js": ["src/content.loader.js"],
+      "run_at": "document_start"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/content/main.js",
+        "src/content/settings.js",
+        "src/content/utils.js",
+        "src/content/style.js",
+        "src/content/filters.js",
+        "src/content/routes.js",
+        "src/content/observe.js",
+        "src/content/messaging.js",
+        "src/content/inject-network-guards.js",
+        "src/content/caughtup-gate.js",
+        "src/content/page-guards.js"
+      ],
+      "matches": ["*://www.instagram.com/*"]
+    }
+  ],
+
+  "background": { "service_worker": "src/background.js" },
+  "declarative_net_request": {
+    "rule_resources": [
+      { "id": "redirect-rules", "enabled": true, "path": "src/rules.json" }
+    ]
+  }
+}

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Instagram Sanitizer — Options</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --bg: #0b0c10;
+        --card: #111317;
+        --ink: #eaf0f1;
+        --muted: #9fb0bf;
+        --line: #1f2430;
+        --accent: #2563eb;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        background: var(--bg);
+        color: var(--ink);
+        font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      }
+      h1 {
+        margin: 0 0 16px;
+        font-size: 18px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .row {
+        display: grid;
+        gap: 6px;
+        margin-bottom: 14px;
+      }
+      label {
+        font-weight: 600;
+      }
+      .hint {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 140px;
+        resize: vertical;
+        background: #0f1115;
+        color: var(--ink);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      button {
+        background: var(--accent);
+        color: white;
+        border: 0;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+      .status {
+        margin-top: 8px;
+        min-height: 18px;
+        font-size: 12px;
+        color: #a7f3d0;
+      }
+      .footer {
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      a {
+        color: #93c5fd;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Instagram Sanitizer — Options</h1>
+
+    <section class="card">
+      <div class="row">
+        <label for="phrasesTextarea">Filter phrases (one per line)</label>
+        <textarea
+          id="phrasesTextarea"
+          spellcheck="false"
+          placeholder="Suggested for you&#10;Sponsored&#10;Because you follow&#10;More like this&#10;Suggested posts&#10;You might like"
+        ></textarea>
+        <div class="hint">
+          Posts/sidebars containing any of these phrases will be hidden if the
+          corresponding toggle is enabled.
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row">
+        <label for="allowlistTextarea"
+          >Allowlisted usernames (one per line, no @)</label
+        >
+        <textarea
+          id="allowlistTextarea"
+          spellcheck="false"
+          placeholder="my_friend_1&#10;awesome_artist&#10;news_account"
+        ></textarea>
+        <div class="hint">
+          These authors will never be hidden, even if heuristics would hide
+          them.
+        </div>
+      </div>
+    </section>
+
+    <section class="card actions">
+      <button id="saveBtn">Save</button>
+      <button
+        id="resetBtn"
+        class="secondary"
+        title="Restore the default phrase list (does not change your allowlist)"
+      >
+        Reset phrases to defaults
+      </button>
+      <div id="status" class="status" aria-live="polite"></div>
+    </section>
+
+    <div class="footer">
+      Need quick toggles for “Hide Sponsored/Suggested/Only Followed”? Use the
+      toolbar popup.
+      <br />
+      <a href="https://www.instagram.com/" target="_blank" rel="noreferrer"
+        >Open Instagram</a
+      >
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>
