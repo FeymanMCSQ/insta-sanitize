@@ -129,13 +129,76 @@ function onDirectPostUrl() {
 function filterSidebar(root = document) {
   if (!SETTINGS.hideSuggested && !SETTINGS.hideSponsored) return;
 
-  root.querySelectorAll("aside, [role='complementary']").forEach((side) => {
-    if (side.dataset.instaSanitized === '1') return;
-    if (SETTINGS.hideSponsored && containsPhrase(side, SETTINGS.phrases))
-      markHidden(side, 'sidebar-phrases');
-    else if (SETTINGS.hideSuggested && containsPhrase(side, SETTINGS.phrases))
-      markHidden(side, 'sidebar-suggested');
-  });
+  // Optimised: Scope to sidebar if possible, but fallback to document if not found (responsive layout)
+  const context = root.querySelector("aside, [role='complementary']") || root;
+
+  if (SETTINGS.hideSuggested) {
+    // Find "Suggested for you" text
+    // "Suggested for you" is usually in a span inside a div
+    const candidates = context.querySelectorAll('span, div');
+
+    for (const el of candidates) {
+      // Skip if hidden or likely irrelevant
+      if (el.offsetParent === null) continue; // not visible
+      if (el.childElementCount > 1) continue; // keep it to leaf-ish nodes
+
+      const text = (el.innerText || '').trim().toLowerCase();
+
+      if (text === 'suggested for you' || text === 'suggestions for you') {
+        // Found the label. Now find the container.
+        // Structure is usually: 
+        // div (Container)
+        //   div (Header Row) -> contains "Suggested for you" and "See All"
+        //   div (List) -> contains users
+
+        // We want to hide 'div (Container)' OR 'Header Row' + 'List'.
+
+        // 1. Get the header row (usually direct parent or grandparent of text)
+        let current = el;
+        // Walk up to find the container div
+
+        let container = null;
+        let p = el.parentElement;
+        for (let i = 0; i < 6; i++) {
+          if (!p) break;
+
+          // If we go too high, we hit the sidebar root.
+          if (p.tagName === 'ASIDE' || p.role === 'complementary') break;
+
+          // Check if p is the header row
+          // It should have the text 'el' and maybe "See All"
+          if (p.innerText.toLowerCase().includes('see all')) {
+
+            // Ideally, 'p' is the header row.
+            // The list of users should be the NEXT SIBLING of 'p', or 'p' parent's next sibling.
+
+            // 1. Hide the header row
+            markHidden(p, 'sidebar-suggested-header');
+
+            // 2. Hide the list (Next Sibling)
+            if (p.nextElementSibling) {
+              markHidden(p.nextElementSibling, 'sidebar-suggested-list');
+            }
+
+            // Also try to find a parent that wraps both, to be cleaner?
+            if (p.parentElement && p.parentElement.children.length === 2) {
+              markHidden(p.parentElement, 'sidebar-suggested-container');
+            }
+
+            container = p; // Stop loop
+            break;
+          }
+
+          p = p.parentElement;
+        }
+
+        if (!container) {
+          // Fallback: just hide the immediate parent structure if clear container not found
+          markHidden(el.parentElement, 'sidebar-suggested-fallback');
+        }
+      }
+    }
+  }
 }
 
 function filterNav(root = document) {
